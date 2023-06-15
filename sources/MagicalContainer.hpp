@@ -1,263 +1,162 @@
-#ifndef MAGICALCONTAINER_H
-#define MAGICALCONTAINER_H
+#ifndef MAGICAL_ITERATORS_MAGICALCONTAINER_HPP
+#define MAGICAL_ITERATORS_MAGICALCONTAINER_HPP
 
 #include <vector>
+#include <stdexcept>
 #include <algorithm>
+#include "cmath"
 
+using namespace std;
 namespace ariel {
 
-class MagicalContainer {
-private:
-    std::vector<int> elements;
-
-public:
-    // Function to add an element to the container
-    void addElement(int element);
-
-    // Function to remove an element from the container
-    void removeElement(int element);
-
-    // Function to get the size of the container
-    int size() const;
-
-    // Function to get a reference to the elements in the container
-    const std::vector<int>& getElements() const;
-
-    class AscendingIterator {
+    class MagicalContainer {
     private:
-        MagicalContainer& container;  // Reference to the MagicalContainer object
-        std::vector<int> sortedElements;  // Sorted elements of the container
-        std::vector<int>::const_iterator iter;  // Iterator pointing to the current element
-        int curr;  // Current index
+        vector<int> Elements;
+        vector<int> vecPrime;
+        static bool isPrime(int number);
 
     public:
-        // Constructor that takes a reference to the MagicalContainer object
-        AscendingIterator(MagicalContainer& container);
+        MagicalContainer();
+        void addElement(int element);
+        void removeElement(int element);
+        size_t size() const;
+        const vector<int> &getElements () const;
 
-        // Copy constructor
-        AscendingIterator(const AscendingIterator& Other);
-
-        // Default constructor
-        AscendingIterator();
-
-        // Destructor
-        ~AscendingIterator();
+        enum class IteratorType { ASCENDING, SIDE_CROSS, PRIME };
 
         class Iterator {
         private:
-            std::vector<int>::const_iterator iter;  // Iterator pointing to the current element
-
+            IteratorType iterType;
         public:
-            // Constructor that takes an iterator
-            Iterator(std::vector<int>::const_iterator iter);
+            Iterator(IteratorType iterType);
+            Iterator() ;
+            ~Iterator();
+                       
+            Iterator &operator=(const Iterator &other) = default;           
+            Iterator& operator=(Iterator&& other) = default;       
 
-            // Comparison operator for inequality
-            bool operator!=(const Iterator& other) const;
+            virtual bool operator==(const Iterator& other) const =0 ;
+            virtual bool operator!=(const Iterator& other) const =0;
+            virtual bool operator>(const Iterator& other) const  =0;
+            virtual bool operator<(const Iterator& other) const  =0;         
 
-            // Dereference operator
-            int operator*() const;
-
-            // Increment operator
-            Iterator& operator++();
-
-            // Function to get the underlying iterator
-            std::vector<int>::const_iterator getIter() const;
+             IteratorType getIterType() const {return iterType;};
         };
-
-        // Function to get the current index
-        int getcurr();
-
-        // Dereference operator
-        int operator*();
-
-        // Increment operator
-        AscendingIterator& operator++();
-
-        // Comparison operator for equality with Iterator
-        bool operator==(const Iterator& other) const;
-
-        // Comparison operator for equality with AscendingIterator
-        bool operator==(const AscendingIterator& other) const;
-
-        // Comparison operator for less than
-        bool operator<(const AscendingIterator& other) const;
-
-        // Comparison operator for greater than
-        bool operator>(const AscendingIterator& other) const;
-
-        // Comparison operator for inequality with Iterator
-        bool operator!=(const AscendingIterator& other) const;
-
-        // Comparison operator for inequality with AscendingIterator
-        bool operator!=(const Iterator& other) const;
-
-        //Assigment operator
-        AscendingIterator& operator=(const AscendingIterator& other);
-
-        // Function to create an iterator pointing to the beginning of the container
-        Iterator begin() const;
-
-        // Function to create an iterator pointing to the end of the container
-        Iterator end() const;
-    };
-
-    class SideCrossIterator {
-    private:
-        const MagicalContainer& container;  // Reference to the MagicalContainer object
-        std::vector<int> crossOrderElements;  // Elements in cross order
-        std::vector<int>::const_iterator iter;  // Iterator pointing to the current element
-        int numiter;  // Number of iterations
-
-    public:
-        class Iterator {
+        class AscendingIterator : public Iterator{
         private:
-            std::vector<int>::const_iterator it;  // Iterator pointing to the current element
-
+            MagicalContainer &container;
+            size_t curr;
         public:
-            // Constructor that takes an iterator
-            Iterator(std::vector<int>::const_iterator iter);
+            AscendingIterator();
+            AscendingIterator(MagicalContainer &container);
+            AscendingIterator(MagicalContainer &container, size_t index);
 
-            // Function to get the underlying iterator
-            std::vector<int>::const_iterator getIter() const;
+            ~AscendingIterator();
 
-            // Comparison operator for inequality
-            bool operator!=(const Iterator& other) const;
+            AscendingIterator(const AscendingIterator &other);                          
+            AscendingIterator(AscendingIterator &&) noexcept = delete;                 
+            AscendingIterator &operator=(const AscendingIterator &other);                
+            AscendingIterator &operator=(AscendingIterator &&) noexcept = delete;      
 
-            // Dereference operator
+            bool operator==(const AscendingIterator &other) const;
+            bool operator!=(const AscendingIterator &other) const;
+            bool operator>(const AscendingIterator &other) const;
+            bool operator<(const AscendingIterator &other) const;
+
+            bool operator==(const Iterator& other) const override;
+            bool operator!=(const Iterator& other) const override;
+            bool operator>(const Iterator& other) const  override;
+            bool operator<(const Iterator& other) const  override;
+
             int operator*() const;
 
-            // Increment operator
-            Iterator& operator++();
+            AscendingIterator &operator++();
+
+            AscendingIterator begin();
+            AscendingIterator end();
+
+            MagicalContainer &getContainer() const;
+            size_t getIndex() const;
+
         };
 
-        // Constructor that takes a reference to the MagicalContainer object
-        SideCrossIterator(const MagicalContainer& cont);
-
-        // Copy constructor
-        SideCrossIterator(const SideCrossIterator& Other);
-
-        // Default constructor
-        SideCrossIterator();
-
-        // Destructor
-        ~SideCrossIterator();
-
-        // Function to get the number of iterations
-        int getnumiter();
-
-        // Dereference operator
-        int operator*();
-
-        // Increment operator
-        SideCrossIterator& operator++();
-
-        // Comparison operator for equality with Iterator
-        bool operator==(const Iterator& other) const;
-
-        // Comparison operator for equality with SideCrossIterator
-        bool operator==(const SideCrossIterator& other) const;
-
-        // Comparison operator for inequality with SideCrossIterator
-        bool operator!=(const SideCrossIterator& other) const;
-
-        // Comparison operator for less than
-        bool operator<(const SideCrossIterator& other) const;
-
-        // Comparison operator for greater than
-        bool operator>(const SideCrossIterator& other) const;
-
-        // Comparison operator for inequality with Iterator
-        bool operator!=(const Iterator& other) const;
-
-        // Assignment operator
-        SideCrossIterator& operator=(const SideCrossIterator& other);
-
-        // Function to create an iterator pointing to the beginning of the container
-        Iterator begin() const;
-
-        // Function to create an iterator pointing to the end of the container
-        Iterator end() const;
-    };
-
-    class PrimeIterator {
-    private:
-        const MagicalContainer& container;  // Reference to the MagicalContainer object
-        std::vector<int> primeElements;  // Prime elements of the container
-        std::vector<int>::const_iterator it;  // Iterator pointing to the current element
-        int curr;  // Current index
-
-        // Function to check if a number is prime
-        bool isPrime(int number);
-
-    public:
-        // Constructor that takes a reference to the MagicalContainer object
-        PrimeIterator(const MagicalContainer& cont);
-
-        // Copy constructor
-        PrimeIterator(const PrimeIterator& Other);
-
-        // Default constructor
-        PrimeIterator();
-
-        // Destructor
-        ~PrimeIterator();
-
-        class Iterator {
+        class SideCrossIterator : public Iterator {
         private:
-            std::vector<int>::const_iterator it;  // Iterator pointing to the current element
+            MagicalContainer &container;
+            size_t front, back;
+            int iters = 0;
 
         public:
-            // Constructor that takes an iterator
-            Iterator(std::vector<int>::const_iterator iter);
+            SideCrossIterator();
+            SideCrossIterator(MagicalContainer &container);
+            SideCrossIterator(MagicalContainer &container, size_t frontIndex, size_t backIndex);
 
-            // Function to get the underlying iterator
-            std::vector<int>::const_iterator getIter() const;
+            ~SideCrossIterator();
 
-            // Comparison operator for inequality
-            bool operator!=(const Iterator& other) const;
+            SideCrossIterator(const SideCrossIterator &other);                          
+            SideCrossIterator(SideCrossIterator &&) noexcept = delete;                  
+            SideCrossIterator &operator=(const SideCrossIterator &other);              
+            SideCrossIterator &operator=(SideCrossIterator &&) noexcept = delete;       
 
-            // Dereference operator
+            bool operator==(const SideCrossIterator &other) const;
+            bool operator!=(const SideCrossIterator &other) const;
+            bool operator>(const SideCrossIterator &other) const;
+            bool operator<(const SideCrossIterator &other) const;
+
+            bool operator==(const Iterator& other) const override;
+            bool operator!=(const Iterator& other) const override;
+            bool operator>(const Iterator& other) const  override;
+            bool operator<(const Iterator& other) const  override;
+
             int operator*() const;
 
-            // Increment operator
-            Iterator& operator++();
+            SideCrossIterator &operator++();
+
+            SideCrossIterator begin();
+            SideCrossIterator end();
+
+            MagicalContainer &getContainer() const;
+            size_t getFrontIndex() const;
+            size_t getBackIndex() const;
         };
 
-        // Dereference operator
-        int operator*();
+     
 
-        // Increment operator
-        PrimeIterator& operator++();
+        class PrimeIterator : public Iterator{
+        private:
+            MagicalContainer &container;
+            size_t index;
+        public:
+            PrimeIterator();
+            PrimeIterator(MagicalContainer &container);
+            PrimeIterator(MagicalContainer &container, size_t index);
+            PrimeIterator(const PrimeIterator &other);
+            ~PrimeIterator();
+            PrimeIterator(PrimeIterator &&) noexcept = delete;
 
-        // Comparison operator for equality with Iterator
-        bool operator==(const Iterator& other) const;
+            PrimeIterator &operator=(PrimeIterator &&) noexcept = delete;
+            PrimeIterator &operator=(const PrimeIterator &other);
 
-        // Comparison operator for equality with PrimeIterator
-        bool operator==(const PrimeIterator& other) const;
+            bool operator==(const PrimeIterator &other) const;
+            bool operator!=(const PrimeIterator &other) const;
+            bool operator>(const PrimeIterator &other) const;
+            bool operator<(const PrimeIterator &other) const;
 
-        // Comparison operator for less than
-        bool operator<(const PrimeIterator& other) const;
+            bool operator==(const Iterator& other) const override;
+            bool operator!=(const Iterator& other) const override;
+            bool operator>(const Iterator& other) const  override;
+            bool operator<(const Iterator& other) const  override;
 
-        // Comparison operator for greater than
-        bool operator>(const PrimeIterator& other) const;
+            int operator*() const;
 
-        // Comparison operator for inequality with PrimeIterator
-        bool operator!=(const PrimeIterator& other) const;
+            PrimeIterator &operator++();
 
-        // Comparison operator for inequality with Iterator
-        bool operator!=(const Iterator& other) const;
+            PrimeIterator begin();
+            PrimeIterator end();
 
-        // Assignment operator
-        PrimeIterator& operator=(const PrimeIterator& other);
-
-        // Function to create an iterator pointing to the beginning of the container
-        Iterator begin() const;
-
-        // Function to create an iterator pointing to the end of the container
-        Iterator end() const;
+            MagicalContainer &getContainer() const;
+            size_t getIndex() const;
+        };
     };
-};
-
-} // namespace ariel
-
-#endif
+}
+#endif //MAGICAL_ITERATORS_MAGICALCONTAINER_HPP
