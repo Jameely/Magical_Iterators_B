@@ -80,25 +80,25 @@ namespace ariel {
     }
 
     // Constructor
-    MagicalContainer::Iterator::Iterator():iterType(IteratorType::ASCENDING)
+    MagicalContainer::Iterator::Iterator():iterType(IteratorType::A)
     {
 
     }
 
     // AscendingIterator Constructor
-    MagicalContainer::AscendingIterator::AscendingIterator(): Iterator(IteratorType::ASCENDING), curr(0),container(*new MagicalContainer())
+    MagicalContainer::AscendingIterator::AscendingIterator(): Iterator(IteratorType::A), curr(0),container(*new MagicalContainer())
     {
 
     }
 
     // AscendingIterator Constructor
-    MagicalContainer::AscendingIterator::AscendingIterator(MagicalContainer &container) :Iterator(IteratorType::ASCENDING), container(container) ,curr(0)
+    MagicalContainer::AscendingIterator::AscendingIterator(MagicalContainer &container) :Iterator(IteratorType::A), container(container) ,curr(0)
     {
 
     }
 
     // AscendingIterator Constructor
-    MagicalContainer::AscendingIterator::AscendingIterator(MagicalContainer &container, size_t index) :Iterator(IteratorType::ASCENDING), container(container), curr(index) 
+    MagicalContainer::AscendingIterator::AscendingIterator(MagicalContainer &container, size_t index) :Iterator(IteratorType::A), container(container), curr(index) 
     {
 
     }
@@ -106,7 +106,7 @@ namespace ariel {
     // AscendingIterator Destructor
     MagicalContainer::AscendingIterator::~AscendingIterator() 
     {
-        // Implementation
+    
     }
 
     // AscendingIterator Copy Constructor
@@ -206,20 +206,20 @@ namespace ariel {
     }
 
     // Get the index associated with the AscendingIterator
-    size_t MagicalContainer::AscendingIterator::getIndex() const {
+    size_t MagicalContainer::AscendingIterator::getCurr() const {
         return this->curr;
     }
 
     // SideCrossIterator Default Constructor
     MagicalContainer::SideCrossIterator::SideCrossIterator() 
-        : Iterator(IteratorType::SIDE_CROSS), iters(0), front(0), back(container.size()-1),container(*new MagicalContainer())
+        : Iterator(IteratorType::S), iters(0), front(0), back(container.size()-1),container(*new MagicalContainer())
     {
         
     }
 
     // SideCrossIterator Constructor
     MagicalContainer::SideCrossIterator::SideCrossIterator(MagicalContainer &container) 
-        :Iterator(IteratorType::SIDE_CROSS), container(container) ,iters(0), front(0), back(container.size()-1)
+        :Iterator(IteratorType::S), container(container) ,iters(0), front(0), back(container.size()-1)
     {
         if(container.Elements.size() == 0 ){
             this->back =0;
@@ -228,7 +228,7 @@ namespace ariel {
 
     // SideCrossIterator Constructor
     MagicalContainer::SideCrossIterator::SideCrossIterator(MagicalContainer &container, size_t frontIndex, size_t backIndex) 
-        :Iterator(IteratorType::SIDE_CROSS), container(container), front(frontIndex), back(backIndex) 
+        :Iterator(IteratorType::S), container(container), front(frontIndex), back(backIndex) 
     {
 
     }
@@ -361,39 +361,39 @@ namespace ariel {
     }
 
     // Get the front index associated with the SideCrossIterator
-    size_t MagicalContainer::SideCrossIterator::getFrontIndex() const {
+    size_t MagicalContainer::SideCrossIterator::getFront() const {
         return this->front;
     }
 
     // Get the back index associated with the SideCrossIterator
-    size_t MagicalContainer::SideCrossIterator::getBackIndex() const {
+    size_t MagicalContainer::SideCrossIterator::getBack() const {
         return this->back;
     }
 
     // PrimeIterator Constructor
     MagicalContainer::PrimeIterator::PrimeIterator() 
-        :Iterator(IteratorType::PRIME) , container(*new MagicalContainer()) , index(0)
+        :Iterator(IteratorType::P) , container(*new MagicalContainer()) , in(0)
     {
         
     }
 
     // PrimeIterator Constructor
     MagicalContainer::PrimeIterator::PrimeIterator(MagicalContainer &container) 
-        : Iterator(IteratorType::PRIME) , container(container),index(0)
+        : Iterator(IteratorType::P) , container(container),in(0)
     {
         
     }
 
     // PrimeIterator Constructor
     MagicalContainer::PrimeIterator::PrimeIterator(MagicalContainer &container, size_t index) 
-        :Iterator(IteratorType::PRIME) ,container(container), index(index)
+        :Iterator(IteratorType::P) ,container(container), in(index)
     {
 
     }
 
     // PrimeIterator Copy Constructor
     MagicalContainer::PrimeIterator::PrimeIterator(const PrimeIterator &other)
-        :Iterator(IteratorType::PRIME) ,container(other.container), index(other.index)
+        :Iterator(IteratorType::P) ,container(other.container), in(other.in)
     {
 
     }
@@ -411,7 +411,7 @@ namespace ariel {
             if (&container != &other.container) {
                 throw runtime_error("Error with operator=()::PrimeIterator");
             }
-            index = other.index;
+            in = other.in;
         }
         return *this;
     }
@@ -419,7 +419,7 @@ namespace ariel {
     // Check if two PrimeIterators are equal
     bool MagicalContainer::PrimeIterator::operator==(const PrimeIterator &other) const 
     {
-        return (this->container.vecPrime == other.container.vecPrime && index == other.index);
+        return (this->container.vecPrime == other.container.vecPrime && in == other.in);
     }
 
     // Check if two PrimeIterators are not equal
@@ -430,12 +430,12 @@ namespace ariel {
 
     // Compare two PrimeIterators (greater than)
     bool MagicalContainer::PrimeIterator::operator>(const PrimeIterator &other) const {
-        return (this->container.vecPrime == other.container.vecPrime && index > other.index);
+        return (this->container.vecPrime == other.container.vecPrime && in > other.in);
     }
 
     // Compare two PrimeIterators (less than)
     bool MagicalContainer::PrimeIterator::operator<(const PrimeIterator &other) const {
-        return (this->container.vecPrime == other.container.vecPrime && index < other.index);
+        return (this->container.vecPrime == other.container.vecPrime && in < other.in);
     }
 
     // Check if a PrimeIterator is equal to another Iterator
@@ -468,15 +468,15 @@ namespace ariel {
 
     // Dereference the PrimeIterator
     int MagicalContainer::PrimeIterator::operator*() const {
-        if (index < 0 || index >= container.vecPrime.size()) {
+        if (in < 0 || in >= container.vecPrime.size()) {
             throw runtime_error("Error out of bounds with operator*()::PrimeIterator");
         }
-        return container.vecPrime[index];
+        return container.vecPrime[in];
     }
 
     // Increment the PrimeIterator
     MagicalContainer::PrimeIterator &MagicalContainer::PrimeIterator::operator++() {
-        if (++index > container.vecPrime.size()) {
+        if (++in > container.vecPrime.size()) {
             throw runtime_error("Error out of bounds with operator++()::PrimeIterator");
         }
         return *this;
@@ -498,8 +498,8 @@ namespace ariel {
     }
 
     // Get the index associated with the PrimeIterator
-    size_t MagicalContainer::PrimeIterator::getIndex() const {
-        return index;
+    size_t MagicalContainer::PrimeIterator::getInd() const {
+        return in;
     }
 
 } // namespace ariel
