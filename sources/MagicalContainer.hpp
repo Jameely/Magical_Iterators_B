@@ -22,7 +22,7 @@ namespace ariel {
         size_t size() const;
         const vector<int> &getElements () const;
 
-        enum class IteratorType { ASCENDING, SIDE_CROSS, PRIME };
+        enum class IteratorType { A, S, P };
 
         class Iterator {
         private:
@@ -76,7 +76,7 @@ namespace ariel {
             AscendingIterator end();
 
             MagicalContainer &getContainer() const;
-            size_t getIndex() const;
+            size_t getCurr() const;
 
         };
 
@@ -116,8 +116,8 @@ namespace ariel {
             SideCrossIterator end();
 
             MagicalContainer &getContainer() const;
-            size_t getFrontIndex() const;
-            size_t getBackIndex() const;
+            size_t getFront() const;
+            size_t getBack() const;
         };
 
      
@@ -125,7 +125,7 @@ namespace ariel {
         class PrimeIterator : public Iterator{
         private:
             MagicalContainer &container;
-            size_t index;
+            size_t in;
         public:
             PrimeIterator();
             PrimeIterator(MagicalContainer &container);
@@ -155,7 +155,7 @@ namespace ariel {
             PrimeIterator end();
 
             MagicalContainer &getContainer() const;
-            size_t getIndex() const;
+            size_t getInd() const;
         };
     };
 }
